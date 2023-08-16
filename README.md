@@ -56,6 +56,52 @@ FROM balanced_tree.sales;
 ```
 ![image](https://github.com/jef-fortunahamid/CaseStudy7_BalancedTree/assets/125134025/0df365bb-40bf-4359-a754-1d520d09b3c8)
 
+### Part B: Transaction Analysis
+> 1. How many unique transactions were there?
+```sql
+SELECT
+  COUNT(DISTINCT txn_id) AS unique_txn_count
+FROM balanced_tree.sales;
+```
+![image](https://github.com/jef-fortunahamid/CaseStudy7_BalancedTree/assets/125134025/ed59da11-e138-4e82-92f2-1fb2cc0944bc)
+
+> 2. What is the average unique products purchased in each transaction?
+```sql
+WITH product_count_per_transaction AS (
+  SELECT
+      txn_id
+    , COUNT(1) AS prod_count
+  FROM balanced_tree.sales
+  GROUP By txn_id
+)
+SELECT
+  ROUND(AVG(prod_count)) AS avg_count_per_txn
+FROM product_count_per_transaction;
+```
+![image](https://github.com/jef-fortunahamid/CaseStudy7_BalancedTree/assets/125134025/c0c3661f-8b41-432d-97cd-4a99f8b32fe7)
+
+> 3. What are the 25th, 50th and 75th percentile values for the revenue per transaction?
+```sql
+WITH transaction_revenue AS (
+  SELECT
+      txn_id
+    , SUM(qty * price) AS revenue
+  FROM balanced_tree.sales
+  GROUP BY txn_id
+)
+SELECT
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY revenue) AS pct_25
+  , PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY revenue) AS pct_50
+  , PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY revenue) AS pct_75
+FROM transaction_revenue;
+```
+![image](https://github.com/jef-fortunahamid/CaseStudy7_BalancedTree/assets/125134025/9f7dbd3b-712e-4e70-bd57-a1e3ed8620b9)
+
+
+
+
+
+
 
 
 
